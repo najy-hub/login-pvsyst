@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إعادة تعيين كلمة المرور</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #111;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    form, #codeSection {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: none;
+      background: #2c2c2c;
+      color: #fff;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #ffc107;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ النموذج الأول لطلب كود التفعيل -->
+  <form onsubmit="requestReset(event)">
+    <h2>إعادة تعيين كلمة المرور</h2>
+    <input type="email" id="email" placeholder="البريد الإلكتروني" required />
+    <button type="submit">إرسال كود التفعيل</button>
+  </form>
+
+  <!-- ✅ القسم الثاني لإدخال الكود وكلمة مرور جديدة -->
+  <div id="codeSection" style="display:none; margin-top: 20px;">
+    <input type="text" id="code" placeholder="أدخل كود التفعيل" required />
+    <input type="password" id="newpass" placeholder="كلمة مرور جديدة" required />
+    <button onclick="confirmReset()">تأكيد التغيير</button>
+  </div>
+
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyyncTU--ejxlcVzPE7DnCk544TZXquLVP22ESjXltPzzMmOTkSVG9DjBmx4KaiSxLF/exec"; // ✅ استبدل XXX بالرابط الصحيح
+
+    function requestReset(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      fetch(`${scriptURL}?reset=true&email=${encodeURIComponent(email)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("✅ تم إرسال كود إلى بريدك");
+            document.getElementById("codeSection").style.display = "block";
+          } else {
+            alert("❌ البريد غير موجود");
+          }
+        })
+        .catch(err => {
+          alert("⚠️ حدث خطأ أثناء الاتصال بالخادم");
+          console.error(err);
+        });
+    }
+
+    function confirmReset() {
+      const email = document.getElementById("email").value;
+      const code = document.getElementById("code").value;
+      const newpass = document.getElementById("newpass").value;
+
+      fetch(`${scriptURL}?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}&newpass=${encodeURIComponent(newpass)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert("✅ تم تحديث كلمة المرور بنجاح");
+            location.href = "https://github.com/najy-hub/Advance-pvsyst";
+          } else {
+            alert("❌ كود غير صحيح أو منتهي الصلاحية");
+          }
+        })
+        .catch(err => {
+          alert("⚠️ حدث خطأ أثناء إرسال البيانات");
+          console.error(err);
+        });
+    }
+  </script>
+
+</body>
+</html>
